@@ -48,9 +48,12 @@ class AIService:
                 )
                 response.raise_for_status()
                 result = response.json()
+                logger.info(f"Claude API response: {result}")
                 return json.loads(result['content'][0]['text'])
         except Exception as e:
             logger.error(f"Claude analysis failed: {str(e)}")
+            if 'response' in locals():
+                logger.error(f"Claude API error response: {response.text}")
             return {"error": f"Claude analysis failed: {str(e)}"}
 
     async def analyze_food_image(self, image_data: bytes) -> Dict[str, Any]:
