@@ -8,6 +8,35 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Log presence of API key at startup
+if os.getenv("ANTHROPIC_API_KEY"):
+    logger.info("ANTHROPIC_API_KEY is set.")
+else:
+    logger.error("ANTHROPIC_API_KEY is NOT set!")
+
+# Test Claude API with a simple prompt at startup
+def test_claude_api():
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    headers = {
+        "x-api-key": api_key,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json"
+    }
+    payload = {
+        "model": "claude-3-5-sonnet-20241022",
+        "max_tokens": 100,
+        "messages": [
+            {"role": "user", "content": "Say hello as a nutrition expert."}
+        ]
+    }
+    try:
+        response = httpx.post("https://api.anthropic.com/v1/messages", headers=headers, json=payload, timeout=10)
+        logger.info(f"Claude test status: {response.status_code}, response: {response.text}")
+    except Exception as e:
+        logger.error(f"Claude test call failed: {e}")
+
+test_claude_api()
+
 class AIService:
     def __init__(self):
         self.api_key = os.getenv("ANTHROPIC_API_KEY")
@@ -46,10 +75,12 @@ class AIService:
                         ]
                     }
                 )
+                logger.debug(f"Claude API HTTP status: {response.status_code}")
+                logger.debug(f"Claude API HTTP response: {response.text}")
                 response.raise_for_status()
                 result = response.json()
-                logger.info(f"Claude API response: {result}")
                 try:
+                    logger.info(f"Claude API response: {result}")
                     return json.loads(result['content'][0]['text'])
                 except Exception as parse_error:
                     logger.error(f"Failed to parse Claude response as JSON: {parse_error}")
@@ -59,6 +90,7 @@ class AIService:
             logger.error(f"Claude analysis failed: {str(e)}")
             if 'response' in locals():
                 logger.error(f"Claude API error response: {response.text}")
+                logger.error(f"Claude API error status: {response.status_code}")
             return {"error": f"Claude analysis failed: {str(e)}"}
 
     async def analyze_food_image(self, image_data: bytes) -> Dict[str, Any]:
