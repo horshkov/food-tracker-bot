@@ -5,6 +5,7 @@ import base64
 from io import BytesIO
 import httpx
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +86,13 @@ class AIService:
                 except Exception as parse_error:
                     logger.error(f"Failed to parse Claude response as JSON: {parse_error}")
                     logger.error(f"Raw Claude response: {result['content'][0]['text']}")
+                    # Try to extract JSON using regex
+                    match = re.search(r'\{.*\}', result['content'][0]['text'], re.DOTALL)
+                    if match:
+                        try:
+                            return json.loads(match.group(0))
+                        except Exception as regex_parse_error:
+                            logger.error(f"Regex JSON extraction also failed: {regex_parse_error}")
                     return {"error": f"Failed to parse Claude response as JSON: {parse_error}", "raw_response": result['content'][0]['text']}
         except Exception as e:
             logger.error(f"Claude analysis failed: {str(e)}")

@@ -5,6 +5,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from ai_services import AIService
 from database import Database
+import re
 
 # Load environment variables
 load_dotenv()
@@ -184,7 +185,13 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(text) > 1000:
         await update.message.reply_text("⚠️ Your message is quite long and may not be processed correctly. Please try to shorten it or split it into multiple messages.")
         return
-    
+
+    # Preprocess text: flatten multiple line breaks, standardize bullet points, remove excessive whitespace
+    text = re.sub(r'\n+', '\n', text)  # Replace multiple line breaks with one
+    text = re.sub(r'^\s*-\s*', '', text, flags=re.MULTILINE)  # Remove leading dashes/bullets
+    text = re.sub(r'\s+', ' ', text)  # Collapse excessive whitespace
+    text = text.strip()
+
     # Analyze the text
     result = await ai_service.get_combined_analysis(text)
     
