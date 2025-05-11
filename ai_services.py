@@ -61,6 +61,7 @@ class AIService:
                             {
                                 "role": "user",
                                 "content": f"""As a nutrition expert, analyze this food description and provide:
+                                Note: Colons in the description are just separators and not part of key-value pairs.
                                 {food_description}
                                 
                                 Please provide:
