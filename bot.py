@@ -142,6 +142,8 @@ async def delete_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle food photos."""
     user_id = update.effective_user.id
+    user = update.effective_user
+    db.add_user(user.id, user.username, user.first_name, user.last_name)
     photo = update.message.photo[-1]  # Get the largest photo
     
     # Download the photo
@@ -174,6 +176,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle text messages."""
     user_id = update.effective_user.id
+    user = update.effective_user
+    db.add_user(user.id, user.username, user.first_name, user.last_name)
     text = update.message.text
     
     # Analyze the text
