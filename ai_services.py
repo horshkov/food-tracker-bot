@@ -49,7 +49,12 @@ class AIService:
                 response.raise_for_status()
                 result = response.json()
                 logger.info(f"Claude API response: {result}")
-                return json.loads(result['content'][0]['text'])
+                try:
+                    return json.loads(result['content'][0]['text'])
+                except Exception as parse_error:
+                    logger.error(f"Failed to parse Claude response as JSON: {parse_error}")
+                    logger.error(f"Raw Claude response: {result['content'][0]['text']}")
+                    return {"error": f"Failed to parse Claude response as JSON: {parse_error}", "raw_response": result['content'][0]['text']}
         except Exception as e:
             logger.error(f"Claude analysis failed: {str(e)}")
             if 'response' in locals():
