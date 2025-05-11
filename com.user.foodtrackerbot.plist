@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.foodtrackerbot</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/DimaH/Library/Mobile Documents/com~apple~CloudDocs/learn to coding/food_tracker_bot/run_bot.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardErrorPath</key>
+    <string>/Users/DimaH/Library/Mobile Documents/com~apple~CloudDocs/learn to coding/food_tracker_bot/bot_error.log</string>
+    <key>StandardOutPath</key>
+    <string>/Users/DimaH/Library/Mobile Documents/com~apple~CloudDocs/learn to coding/food_tracker_bot/bot_output.log</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/DimaH/Library/Mobile Documents/com~apple~CloudDocs/learn to coding/food_tracker_bot</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+</dict>
+</plist> 
