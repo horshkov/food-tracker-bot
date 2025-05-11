@@ -179,12 +179,22 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     db.add_user(user.id, user.username, user.first_name, user.last_name)
     text = update.message.text
+
+    # Prompt length check
+    if len(text) > 1000:
+        await update.message.reply_text("⚠️ Your message is quite long and may not be processed correctly. Please try to shorten it or split it into multiple messages.")
+        return
     
     # Analyze the text
     result = await ai_service.get_combined_analysis(text)
     
     if "error" in result:
-        await update.message.reply_text(f"❌ Sorry, I couldn't analyze your food description. {result['error']}")
+        error_msg = result["error"]
+        raw_response = result.get("raw_response")
+        if raw_response:
+            await update.message.reply_text(f"❌ Sorry, I couldn't analyze your food description. {error_msg}\n\nClaude raw response:\n{raw_response}")
+        else:
+            await update.message.reply_text(f"❌ Sorry, I couldn't analyze your food description. {error_msg}")
         return
     
     # Save to database
