@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class AIService:
     def __init__(self):
-        self.api_key = "REMOVED"
+        self.api_key = os.getenv("ANTHROPIC_API_KEY")
         self.headers = {
             "x-api-key": self.api_key,
             "anthropic-version": "2023-06-01",
